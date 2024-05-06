@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX Example</title>
+</head>
+<body>
+    <div id="result"></div>
+    <script src="script.js"></script>
+</body>
+<table id="data-table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Password</th>
+            <!-- Tambahkan kolom untuk tombol hapus -->
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Isi tabel akan dimasukkan melalui JavaScript -->
+    </tbody>
+</table>
+
+<script>
+// Fungsi untuk menambahkan data ke dalam tabel
+function addDataToTable(data) {
+    var table = document.getElementById("data-table").getElementsByTagName('tbody')[0];
+    data.forEach(function(item) {
+        var row = table.insertRow();
+        row.insertCell(0).textContent = item.username;
+        row.insertCell(1).textContent = item.password;
+        // Tambahkan tombol hapus untuk setiap data
+        var deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.onclick = function() {
+            deleteData(item.id); // Panggil fungsi untuk menghapus data
+        };
+        row.insertCell(2).appendChild(deleteButton);
+    });
+}
+
+// Memanggil data dari server menggunakan AJAX
+var xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var data = JSON.parse(this.responseText);
+        addDataToTable(data); // Panggil fungsi untuk menambahkan data ke dalam tabel
+    }
+};
+xhr.open("GET", "file_php_yang_anda_buat.php", true);
+xhr.send();
+
+// Fungsi untuk menghapus data dengan AJAX
+function deleteData(id) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Refresh tabel setelah data dihapus
+            location.reload();
+        }
+    }; 
+    xhr.open("GET", "delete.php?id=" + id, true);
+    xhr.send();
+}
+</script>
+ n
+</html>
